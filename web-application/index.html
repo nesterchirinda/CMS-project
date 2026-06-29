@@ -1,0 +1,299 @@
+<!-- CONTAINER: Web Application [Container: HTML, CSS, JS]
+    PURPOSE: Provides the user interface HTML structure for consumers and staff (US001, US002, US006, NFR06) -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CMS - Complaint Management System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- LOGIN SCREEN: shown to all users on load, client.js routes by role on success -->
+  <main id="login-screen" class="screen">
+    <section class="login-card" aria-labelledby="login-heading">
+
+      <div class="login-logo-wrap">
+        <img id="login-logo" src="" alt="" class="login-logo hidden" />
+      </div>
+
+      <header class="login-header">
+        <h1 id="login-heading">CMS Login</h1>
+        <p class="login-sub">Complaint Management System</p>
+      </header>
+
+      <form id="login-form" novalidate>
+
+        <div class="field">
+          <!-- for attribute links label to input, WCAG -->
+          <label for="email">Email address <span aria-hidden="true">*</span></label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            aria-required="true"
+            placeholder="you@organisation.com"
+            autocomplete="email"
+          />
+        </div>
+
+        <div class="field">
+          <label for="password">Password <span aria-hidden="true">*</span></label>
+          <div class="password-wrapper">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              aria-required="true"
+              autocomplete="current-password"
+            />
+            <!-- aria-label updated by client.js when toggled -->
+            <button type="button" id="toggle-password" aria-label="Show password" class="btn-toggle">
+              <i id="eye-icon" class="fa-regular fa-eye" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- announce errors without interrupting screen reader flow (NFR06) -->
+        <div id="login-error" role="alert" aria-live="polite" class="error-msg"></div>
+
+        <button type="submit" class="btn-primary btn-full">Sign in</button>
+        <a href="#" class="forgot-link">Forgot your password?</a>
+      </form>
+
+    </section>
+  </main>
+
+
+  <!-- CONSUMER SCREEN: shown after login when role === 'Consumer' (US001, US002) -->
+  <div id="consumer-screen" class="screen hidden">
+
+    <!-- tenant logo and user info injected by client.js on login -->
+    <header class="app-header" role="banner">
+      <div class="header-left">
+        <img id="consumer-tenant-logo" src="" alt="" class="tenant-logo" />
+        <span class="app-title">Complaint Management System</span>
+      </div>
+      <div class="header-right">
+        <span id="consumer-name" class="user-label"></span>
+        <button id="consumer-logout" class="btn-ghost">Sign out</button>
+      </div>
+    </header>
+
+    <div class="layout">
+
+      <!-- sidebar nav matches wireframe Figure 8 -->
+      <nav class="sidebar" aria-label="Consumer navigation">
+        <button id="btn-show-submit" class="nav-item active" aria-pressed="true">
+          <span class="nav-icon" aria-hidden="true">&#43;</span>
+          Submit Complaint
+        </button>
+        <button id="btn-show-my-complaints" class="nav-item" aria-pressed="false">
+          <span class="nav-icon" aria-hidden="true">&#9776;</span>
+          My Complaints
+        </button>
+      </nav>
+
+      <main class="content" id="consumer-main">
+
+        <!-- submit-section: US001 complaint submission form -->
+        <section id="submit-section" aria-labelledby="submit-heading">
+          <div class="section-header">
+            <h2 id="submit-heading">Submit a New Complaint</h2>
+            <p class="section-sub">Required fields are marked with an asterisk (*)</p>
+          </div>
+
+          <div class="form-card">
+            <form id="complaint-form" novalidate>
+
+              <div class="field">
+                <label for="title">Complaint title <span aria-hidden="true">*</span></label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  required
+                  aria-required="true"
+                  placeholder="Provide a brief summary of your issue"
+                />
+              </div>
+
+              <div class="field">
+                <label for="category">Category <span aria-hidden="true">*</span></label>
+                <select id="category" name="category" required aria-required="true">
+                  <option value="">-- Select a category --</option>
+                  <option value="Account Access">Account Access</option>
+                  <option value="Transaction Issues">Transaction Issues</option>
+                  <option value="Fraudulent Activity">Fraudulent Activity</option>
+                  <option value="Card Services">Card Services</option>
+                  <option value="Online Banking">Online Banking</option>
+                  <option value="Mobile App">Mobile App</option>
+                  <option value="Customer Service">Customer Service</option>
+                  <option value="Billing &amp; Payments">Billing &amp; Payments</option>
+                  <option value="General">General</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="description">Description <span aria-hidden="true">*</span></label>
+                <textarea
+                  id="description"
+                  name="description"
+                  required
+                  aria-required="true"
+                  maxlength="2500"
+                  placeholder="Please provide a description of your issue (max 2500 characters)"
+                  rows="6"
+                ></textarea>
+                <!-- aria-live announces remaining count to screen readers on each keystroke -->
+                <div class="char-counter" aria-live="polite">
+                  <span id="char-count">2500</span> characters remaining
+                </div>
+              </div>
+
+              <div id="complaint-form-error" role="alert" aria-live="polite" class="error-msg"></div>
+
+              <div class="form-actions">
+                <button type="button" id="cancel-complaint" class="btn-secondary">Cancel</button>
+                <button type="submit" class="btn-primary">Submit complaint</button>
+              </div>
+
+            </form>
+
+            <!-- success state shown after POST /api/complaints returns 201, reference number injected by client.js -->
+            <div id="complaint-success" role="alert" aria-live="polite" class="success-msg hidden"></div>
+          </div>
+        </section>
+
+        <!-- my-complaints-section: US002 - consumer views their own complaints only -->
+        <section id="my-complaints-section" class="hidden" aria-labelledby="my-complaints-heading">
+          <div class="section-header">
+            <h2 id="my-complaints-heading">My Complaints</h2>
+          </div>
+
+          <div id="my-complaints-error" role="alert" aria-live="polite" class="error-msg"></div>
+
+          <!-- table-wrapper allows horizontal scroll on narrow viewports -->
+          <div class="table-wrapper">
+            <table aria-label="My submitted complaints">
+              <thead>
+                <tr>
+                  <th scope="col">Ref</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Submitted</th>
+                </tr>
+              </thead>
+              <tbody id="my-complaints-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+
+  <!-- AGENT SCREEN: shown after login when role === 'Agent','Manager','Admin' all complaints filtered by tenantId server-side -->
+  <div id="agent-screen" class="screen hidden">
+
+    <header class="app-header" role="banner">
+      <div class="header-left">
+        <img id="agent-tenant-logo" src="" alt="" class="tenant-logo" />
+        <span class="app-title">Complaint Management System</span>
+      </div>
+      <div class="header-right">
+        <span id="agent-name" class="user-label"></span>
+        <button id="agent-logout" class="btn-ghost">Sign out</button>
+      </div>
+    </header>
+
+    <div class="layout">
+
+      <!-- sidebar nav -->
+      <nav class="sidebar" aria-label="Agent navigation">
+        <button class="nav-item active" aria-pressed="true">
+          <span class="nav-icon" aria-hidden="true">&#9776;</span>
+          My Complaints
+        </button>
+      </nav>
+
+      <main class="content" id="agent-main">
+
+        <div class="section-header">
+          <h2 id="agent-complaints-heading">All Tenant Complaints</h2>
+          <p class="section-sub">Showing complaints for your organisation only</p>
+        </div>
+
+        <!-- KPI stat cards: values populated by client.js after complaints load -->
+        <div class="kpi-row" aria-label="Complaint summary">
+          <div class="kpi-card">
+            <span class="kpi-value" id="kpi-open">—</span>
+            <span class="kpi-label">Open Complaints</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-value" id="kpi-in-progress">—</span>
+            <span class="kpi-label">In Progress</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-value" id="kpi-resolved">—</span>
+            <span class="kpi-label">Resolved Today</span>
+          </div>
+        </div>
+
+        <div id="agent-complaints-error" role="alert" aria-live="polite" class="error-msg"></div>
+
+        <div class="table-wrapper">
+          <table aria-labelledby="agent-complaints-heading">
+            <thead>
+              <tr>
+                <th scope="col">Ref</th>
+                <th scope="col">Title</th>
+                <th scope="col">Status</th>
+                <th scope="col">Category</th>
+                <th scope="col">Support Person</th>
+                <th scope="col">Submitted</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody id="agent-complaints-body"></tbody>
+          </table>
+        </div>
+
+      </main>
+    </div>
+
+    <!-- US006 modal for assigning complaint to a support person, inc keyboard navigation (NFR06) -->
+    <div id="assign-panel" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="assign-heading">
+      <div class="modal-content">
+        <h2 id="assign-heading">Assign Complaint</h2>
+        <form id="assign-form" novalidate>
+          <div class="field">
+            <label for="support-person">Support Person <span aria-hidden="true">*</span></label>
+            
+            <!-- options populated by client.js from GET /api/users/support-persons -->
+            <select id="support-person" required aria-required="true">
+              <option value="">-- Select support person --</option>
+            </select>
+          </div>
+          <div id="assign-error" role="alert" aria-live="polite" class="error-msg"></div>
+          <div class="form-actions">
+            <button type="button" id="cancel-assign" class="btn-secondary">Cancel</button>
+            <button type="submit" class="btn-primary">Assign</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- client.js handles all API calls, DOM updates and screen routing -->
+  <script src="client.js"></script>
+</body>
+</html>

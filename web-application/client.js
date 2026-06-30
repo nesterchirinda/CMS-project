@@ -299,8 +299,8 @@
     tbody.innerHTML = complaints.map(function (c) {
       // show support person name if assigned, otherwise Unassigned
       var supportPerson = c.assigned_agent_name
-      ? escHtml(c.assigned_agent_name)
-      : '<span style="color:var(--col-text-muted)">Unassigned</span>';
+        ? '<span style="color:var(--col-primary); font-weight:600">' + escHtml(c.assigned_agent_name) + '</span>'
+        : '<span style="color:var(--col-text-muted)">Unassigned</span>';
       return '<tr>' +
         '<td>CMS-' + escHtml(String(c.complaint_id)) + '</td>' +
         '<td>' + escHtml(c.title) + '</td>' +

@@ -284,16 +284,12 @@
     var complaints = result.data;
 
     // calculate KPI values from the loaded complaints
-    var today = new Date().toDateString();
-    var open = complaints.filter(function (c) { return c.complaint_status === 'Submitted'; }).length;
-    var inProgress = complaints.filter(function (c) { return c.complaint_status === 'In Progress'; }).length;
-    var resolvedToday = complaints.filter(function (c) {
-      return c.complaint_status === 'Resolved' && new Date(c.updated_at).toDateString() === today;
-    }).length;
+    var unassigned = complaints.filter(function (c) { return !c.assigned_agent_id; }).length;
+    var assigned = complaints.filter(function (c) { return c.assigned_agent_id; }).length;
 
-    $('kpi-open').textContent = open;
-    $('kpi-in-progress').textContent = inProgress;
-    $('kpi-resolved').textContent = resolvedToday;
+    $('kpi-unassigned').textContent = unassigned;
+    $('kpi-assigned').textContent = assigned;
+    $('kpi-total').textContent = complaints.length;
 
     if (!complaints.length) {
       tbody.innerHTML = '<tr><td colspan="7">No complaints found.</td></tr>';

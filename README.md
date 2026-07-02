@@ -12,10 +12,10 @@ The CMS enables consumers to submit and track complaints online, and allows help
 - **Architecture:** Clean Architecture with Dependency Inversion Principle (DIP)
 
 ## Implemented Features
-- US001 — Consumer complaint submission with email notification
-- US002 — Consumer complaint status view and agent complaint dashboard
-- US006 — Agent assignment of complaints to support persons
-- NFR06 — WCAG 2.2 AA accessible frontend (WAVE score 10/10)
+- US001: Consumer complaint submission with email notification
+- US002: Consumer complaint status view and agent complaint dashboard
+- US006: Agent assignment of complaints to support persons
+- NFR06: WCAG 2.2 AA accessible frontend (WAVE score 10/10)
 - Multi-tenant isolation enforced at database level via tenant_id filtering (ADR-04)
 
 ## Setup & Installation
